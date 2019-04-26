@@ -13,7 +13,17 @@ export class App extends React.Component<{}, IState> {
     event.preventDefault();
     const { currentTask, tasks } = this.state;
     console.log(currentTask);
-    this.setState({currentTask: "", tasks:[...tasks, currentTask] });
+    this.setState({
+      currentTask: "",
+      tasks:[
+        ...tasks,
+        {
+          id:this._timeInMillisecond(),
+          value: currentTask,
+          completed: false
+        }
+      ]
+    });
   }
 
   public handleChange = (event:any):void => {
@@ -26,9 +36,9 @@ export class App extends React.Component<{}, IState> {
 
   public renderTasks = ():JSX.Element[] => {
     const { tasks } = this.state;
-    return tasks.map((task:string, index:number) => {
+    return tasks.map((task:ITask, index:number) => {
       return(
-        <div key={index}>{task}</div>
+        <div key={task.id}>{task.value}</div>
       )
     })
   }
@@ -54,9 +64,20 @@ export class App extends React.Component<{}, IState> {
       </div>
     )
   }
+
+  private _timeInMillisecond = ():number => {
+    const date:Date = new Date();
+    return date.getTime();
+  }
+
 }
 
 interface IState {
   currentTask: string;
-  tasks: Array<string>;
+  tasks: Array<ITask>;
+}
+interface ITask {
+  id: number;
+  value: string;
+  completed: boolean
 }
